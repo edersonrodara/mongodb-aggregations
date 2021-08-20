@@ -1,7 +1,7 @@
 db.movies.aggregate(
   [
     {
-      $project: {
+      $addFields: {
         title_split: {
           $split: ["$title", " "],
         },
