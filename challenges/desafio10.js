@@ -13,6 +13,9 @@ db.trips.aggregate(
       },
     },
     {
+      $sort: { duracaoMedia: 1 },
+    },
+    {
       $project: {
         _id: false,
         tipo: "$_id",
