@@ -1,26 +1,31 @@
 db.trips.aggregate(
   [
     {
-      $group: {
-        _id: { diaDaSemana: { $dayOfWeek: "$startTime" },
-          nomeEstacao:
-          "$startStationName",
+      $match: {
+        startTime: {
+          $gte: ISODate("2016-03-10T00:00:00.0Z"), $lt: ISODate("2016-03-10T23:59:59.0Z"),
         },
-        total: { $sum: 1 },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        duracaoMediaEmMinutos: {
+          $avg: {
+            $divide: [
+              { $subtract: ["$stopTime", "$startTime"] }, 60 * 1000,
+            ],
+          },
+        },
       },
     },
     {
       $project: {
         _id: false,
-        nomeEstacao: "$_id.nomeEstacao",
-        total: "$total",
+        duracaoMediaEmMinutos: {
+          $ceil: "$duracaoMediaEmMinutos",
+        },
       },
-    },
-    {
-      $sort: { total: -1 },
-    },
-    {
-      $limit: 1,
     },
   ],
 );
